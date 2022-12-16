@@ -24,10 +24,11 @@ fn send_notification(
     notification: &Notification,
 ) -> Result<reqwest::blocking::Response, reqwest::Error> {
     let http_url =
-        env::var("HTTP_PATH").unwrap_or("http://127.0.0.1:8723/notification".to_string());
+        env::var("HTTP_PATH").unwrap_or_else(|_| "http://127.0.0.1:8723/notification".into());
 
     let client = reqwest::blocking::Client::new();
-    return client.post(http_url).json(notification).send();
+
+    client.post(http_url).json(notification).send()
 }
 
 fn main() {
