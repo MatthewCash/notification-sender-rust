@@ -23,8 +23,10 @@ struct Notification {
 fn send_notification(
     notification: &Notification,
 ) -> Result<reqwest::blocking::Response, reqwest::Error> {
-    let http_url =
-        env::var("HTTP_PATH").unwrap_or_else(|_| "http://127.0.0.1:8723/notification".into());
+    let http_url = env::var("HTTP_PATH")
+        .ok()
+        .or_else(|| std::option_env!("HTTP_PATH").map(|x| x.into()))
+        .unwrap_or_else(|| "https://notifications.epsilon.zero/notification".into());
 
     let client = reqwest::blocking::Client::new();
 
